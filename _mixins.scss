@@ -1,0 +1,100 @@
+@mixin subtleShadow( $color: rgba(0,0,0,.3), $x: 1px, $y: 1px, $blur: 2px ){
+  @include box-shadow( $color, $x, $y, $blur );  
+}
+
+@mixin transition($transition-property, $transition-time, $method) {
+  -webkit-transition: $transition-property $transition-time $method;
+  -moz-transition: $transition-property $transition-time $method;
+  -ms-transition: $transition-property $transition-time $method;
+  -o-transition: $transition-property $transition-time $method;
+  transition: $transition-property $transition-time $method;
+}
+
+//
+// mixin for bullet proof font declaration syntax
+// http://pivotallabs.com/bulletproof-font-face-syntax-with-sass/
+// modified to have font-id argument for SVG fonts (otherwise identifier and font id always have to be the same)
+//
+
+@mixin font-face($font-family, $font-id, $file-path, $weight: normal, $style: normal ) {
+  @font-face {
+      font-family: $font-family;
+      src: url('#{$file-path}.eot');
+      src: url('#{$file-path}.eot?#iefix') format('embedded-opentype'),
+           url('#{$file-path}.woff') format('woff'),
+           url('#{$file-path}.ttf') format('truetype'),
+           url('#{$file-path}.svg##{$font-id}') format('svg');
+      font-weight: $weight;
+      font-style: $style;
+      font-stretch: none;
+  }
+}
+
+@function blackTranslucent($opacity){
+    @return rgba(0,0,0,$opacity)
+}
+
+@function whiteTranslucent($opacity){
+    @return rgba(255,255,255,$opacity)
+}
+
+@mixin abs( $top: 0, $right: none, $bottom: none, $left: 0, $zindex: 0 ){
+  //position the element
+  position: absolute;
+  top: $top;
+  left: $left;
+  z-index: $zindex;
+/**
+  wanted to use the & (parent selector) to set the parent position to relative and call this absRelToParent (or something similar)
+  but it didnt seem to work
+*/
+}
+
+// flyout ... displays content of .flyout-content as a flyout
+@mixin flyout {
+  position: relative;
+  cursor: pointer;
+  &:hover, 
+  &:focus {
+    z-index: 550;
+    .flyout-content {
+      opacity: 1;
+      cursor: default;
+      top: -2.675em;
+      left: 30%;
+    }
+  }
+  .flyout-content {
+    -webkit-transition: opacity 375ms cubic-bezier(0.250, 0.460, 0.450, 0.940);
+    transition: opacity 375ms cubic-bezier(0.250, 0.460, 0.450, 0.940);
+    position: absolute;
+    top: -18000px;
+    left: -18000px;
+    opacity: 0;
+    width: 24em;
+    padding: 1em;
+    background-color: rgba( $gbz-blue, .9 );
+    color: #fff;
+    // need wrapping p tag 
+    // so we can set it's position to relative
+    // and subsequently position the :before arrow
+    p {
+      margin: 0;
+      position: relative;
+      &:before {
+        content: ' ';
+        height: 0;
+        position: absolute;
+        width: 0;
+        border: 10px solid transparent; /* arrow size */
+        border-right: 10px rgba( $gbz-blue, .9 ) solid;
+      }
+      &:before {
+        /* positioning */
+        top: 2em;
+        left: -2.245em;
+        z-index: 2;
+      }
+    }
+  }
+}
